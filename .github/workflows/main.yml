@@ -28,7 +28,7 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Install fortune-mod and cowsay
-         run: |
+          run:| 
           sudo apt update
           sudo apt install fortune-mod cowsay -y
       - name: Copy shell script to EC2
