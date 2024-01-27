@@ -1,0 +1,39 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{env.AWS_REGION}}
+
+      - name: Set up SSH
+        uses: nyrahul/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Install fortune-mod and cowsay
+         run:|
+          sudo apt update
+          sudo apt install fortune-mod cowsay -y
+      - name: Copy shell script to EC2
+        run: scp -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no wisecow.sh ubuntu@ec2-44-211-163-253:/
+
+      - name: Run shell script on EC2
+        run: ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ubuntu@ec2-44-211-163-253 'bash -s' < /wisecow.sh
+
