@@ -33,7 +33,7 @@ jobs:
           sudo apt install fortune-mod cowsay -y
       - name: Clone Git repository
         run: |
-         git clone https://github.com/khandelwal-khushik/wisecow-app.git /home/app
+         git clone https://github.com/khandelwal-khushik/wisecow-app.git chmod 755 /home/app
             
       - name: Run shell script on EC2
         run: ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ubuntu@ec2-44-211-163-253 'bash -s' < /wisecow.sh
