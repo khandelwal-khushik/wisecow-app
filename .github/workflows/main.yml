@@ -14,7 +14,15 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
+        run: | 
+           ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ubuntu@34.205.127.253 '
+           sudo apt update &&
+           sudo apt install fortune-mod cowsay -y &&
+           git clone https://github.com/khandelwal-khushik/wisecow-app.git /app &&
+           cd wisecow-app &&
+           sh wisecow.sh
+           '
         
       - name: Build & Deploy
         env:
@@ -28,12 +36,4 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{env.AWS_REGION}}
-          
-      - name: Run shell script on EC2
-        run: | 
-           ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ubuntu@34.205.127.253 'bash -s'
-           sudo apt update
-           sudo apt install fortune-mod cowsay -y
-           git clone https://github.com/khandelwal-khushik/wisecow-app.git /app
-           cd wisecow-app
-           sh wisecow.sh
+
