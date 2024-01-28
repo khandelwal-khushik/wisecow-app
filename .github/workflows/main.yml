@@ -21,7 +21,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '         
           sudo apt update &&
           sudo apt install fortune-mod cowsay -y &&
-          chmod 777 /opt/ &&
+          sudo chmod 777 /opt/ &&
           sudo mkdir /opt/app &&
           git clone https://github.com/khandelwal-khushik/wisecow-app.git /opt/app &&    
           cd wisecow-app &&
