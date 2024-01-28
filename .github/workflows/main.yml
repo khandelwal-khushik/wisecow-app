@@ -15,28 +15,25 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+        
+      - name: Build & Deploy
+        env:
+            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+            HOSTNAME: ${{secrets.SSH_HOST}}
+            USER_NAME: ${{secrets.USER_NAME}}
+            
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{env.AWS_REGION}}
-
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.8.0
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-      - name: Install fortune-mod and cowsay
-        run: |
-          sudo apt update
-          sudo apt install fortune-mod cowsay -y
-      - name: Clone Git repository
-        run: |
-         mkdir app
-         chmod 755 app
-         git clone https://github.com/khandelwal-khushik/wisecow-app.git ./app
-            
+          
       - name: Run shell script on EC2
-        run: ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ubuntu@ec2-44-211-163-253 'bash -s' < /wisecow.sh
-
+        run: | 
+           ssh -i ${{ secrets.SSH_PRIVATE_KEY }} -o StrictHostKeyChecking=no ubuntu@34.205.127.253 'bash -s'
+           sudo apt update
+           sudo apt install fortune-mod cowsay -y
+           git clone https://github.com/khandelwal-khushik/wisecow-app.git /app
+           cd wisecow-app
+           sh wisecow.sh
