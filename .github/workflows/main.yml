@@ -1,31 +1,41 @@
-name: Deploy to EC2
+name: Deploy to ECR
 
 on:
+ 
   push:
-    branches:
-      - main
+    branches: [ main ]
+
+env:
+  ECR_REPOSITORY: wisecow-app
+  AWS_REGION: us-east-1
 
 jobs:
-  deploy:
+  
+  build:
+    
+    name: Deployment
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Build & Deploy
-        env:
-            PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-            HOSTNAME: ${{secrets.SSH_HOST}}
-            USER_NAME: ${{secrets.USER_NAME}}
-        run: | 
-          echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '  
-          sudo apt update &&
-          sudo apt install fortune-mod cowsay -y &&
-          sudo chmod 777 /opt/ &&
-          sudo git clone https://github.com/khandelwal-khushik/wisecow-app.git /opt/app &&    
-          cd /opt/app/ &&
-          sudo sh wisecow.sh
-          '
-            
-     
 
+    - name: Check out code
+      uses: actions/checkout@v2
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{env.AWS_REGION}}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}        
+        IMAGE_TAG: ${{ steps.commit.outputs.short }}
+      run: |
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f Docker/Dockerfile .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
