@@ -5,7 +5,6 @@ on:
     branches:
       - main
 
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -22,10 +21,9 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '         
           sudo apt update &&
           sudo apt install fortune-mod cowsay -y &&
-          pwd &&
-          git clone https://github.com/khandelwal-khushik/wisecow-app.git &&
-          mkdir /opt/app
+          mkdir /opt/app &&
           chmod 777 /opt/app &&
+          git clone https://github.com/khandelwal-khushik/wisecow-app.git /opt/app &&    
           cd wisecow-app &&
           sh wisecow.sh
           '
