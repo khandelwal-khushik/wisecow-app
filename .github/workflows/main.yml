@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
       - uses: actions/checkout@v2
       - name: Build & Deploy
         env:
@@ -20,14 +19,13 @@ jobs:
             USER_NAME: ${{secrets.USER_NAME}}
         run: | 
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '
-           
-           sudo apt update &&
-           sudo apt install fortune-mod cowsay -y &&
-           git clone https://github.com/khandelwal-khushik/wisecow-app.git /app &&
-           cd wisecow-app &&
-           sh wisecow.sh
-           '
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '         
+          sudo apt update &&
+          sudo apt install fortune-mod cowsay -y &&
+          git clone https://github.com/khandelwal-khushik/wisecow-app.git /app &&
+          cd wisecow-app &&
+          sh wisecow.sh
+          '
             
      
 
