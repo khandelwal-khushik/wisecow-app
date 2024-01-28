@@ -18,11 +18,12 @@ jobs:
             USER_NAME: ${{secrets.USER_NAME}}
         run: | 
           echo "$PRIVATE_KEY" > private_key && chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '         
-          sudo apt update &&
-          sudo apt install fortune-mod cowsay -y &&
-          sudo chmod 777 /opt/ &&
-          sudo mkdir /opt/app &&
+          ssh -o StrictHostKeyChecking=no -i private_key ${USER_NAME}@${HOSTNAME} '  
+          sudo -i 
+          apt update &&
+          apt install fortune-mod cowsay -y &&
+          chmod 777 /opt/ &&
+          mkdir /opt/app &&
           git clone https://github.com/khandelwal-khushik/wisecow-app.git /opt/app &&    
           cd wisecow-app &&
           sh wisecow.sh
