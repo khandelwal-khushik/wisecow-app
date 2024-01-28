@@ -24,7 +24,8 @@ jobs:
           sudo apt install fortune-mod cowsay -y &&
           pwd &&
           git clone https://github.com/khandelwal-khushik/wisecow-app.git &&
-          chmod 777 app &&
+          mkdir /opt/app
+          chmod 777 /opt/app &&
           cd wisecow-app &&
           sh wisecow.sh
           '
