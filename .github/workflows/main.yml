@@ -9,7 +9,7 @@ env:
   ECR_REPOSITORY: wisecow-app
   EKS_CLUSTER_NAME: wisecow
   AWS_REGION: us-east-1
-  IMAGE_TAG: v1
+  IMAGE_TAG: v2
 
 jobs:
   
@@ -47,5 +47,6 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}        
       run: |
-        kubectl apply -f manifests/Deployment.yaml
+        kubectl delete -f manifests/Deployment.yaml
         kubectl apply -f manifests/service.yaml
+        kubectl apply -f manifests/Deployment.yaml
