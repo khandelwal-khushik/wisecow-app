@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: wisecow-app
-        image: wisecow-app
+        image: 654654145588.dkr.ecr.us-east-1.amazonaws.com/wisecow-app:v1
         imagePullPolicy: Always
         ports:
         - containerPort: 4499
